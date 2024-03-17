@@ -3,7 +3,6 @@ Tuition Tracker is an Android application designed to help students manage their
 Student Management: Add and view student details, including name and credit balance.
 Credit Tracking: Deduct credits as classes are taken and add credits with each payment.
 Payment Recording: Keep a history of payments, including the amount and date.
-Notifications: Remind tutors when a student's credits are low.
 Prerequisites:
 Android Studio
 Minimum SDK Version: 28
