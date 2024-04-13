@@ -1,0 +1,155 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+
+public class StudentManager extends JFrame {
+    private List<Student> students;
+    private DefaultListModel<Student> listModel;
+    private JList<Student> studentList;
+    private JTextArea detailsTextArea;
+
+    public StudentManager() {
+        // Initialize students list
+        students = new ArrayList<>();
+
+        // Create GUI components
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        JPanel studentPanel = new JPanel(new BorderLayout());
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        JButton addButton = new JButton("Add Student");
+        JButton deductButton = new JButton("-");
+        JButton addPaymentButton = new JButton("Add Payment");
+        listModel = new DefaultListModel<>();
+        studentList = new JList<>(listModel);
+        JScrollPane studentScrollPane = new JScrollPane(studentList);
+        detailsTextArea = new JTextArea();
+        JScrollPane detailsScrollPane = new JScrollPane(detailsTextArea);
+
+        // Add components to panels
+        studentPanel.add(studentScrollPane, BorderLayout.CENTER);
+        studentPanel.add(buttonPanel, BorderLayout.SOUTH);
+        buttonPanel.add(addButton);
+        buttonPanel.add(deductButton);
+        buttonPanel.add(addPaymentButton);
+        mainPanel.add(studentPanel, BorderLayout.WEST);
+        mainPanel.add(detailsScrollPane, BorderLayout.CENTER);
+
+        // Add action listeners
+        addButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String name = JOptionPane.showInputDialog("Enter student name:");
+                if (name != null && !name.isEmpty()) {
+                    Student student = new Student(name);
+                    students.add(student);
+                    listModel.addElement(student);
+                }
+            }
+        });
+
+        studentList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                Student selectedStudent = studentList.getSelectedValue();
+                if (selectedStudent != null) {
+                    detailsTextArea.setText(selectedStudent.toString());
+                }
+            }
+        });
+
+        deductButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Student selectedStudent = studentList.getSelectedValue();
+                if (selectedStudent != null) {
+                    selectedStudent.deductCredit();
+                    detailsTextArea.setText(selectedStudent.toString());
+                } else {
+                    JOptionPane.showMessageDialog(StudentManager.this, "Please select a student.");
+                }
+            }
+        });
+
+        addPaymentButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Student selectedStudent = studentList.getSelectedValue();
+                if (selectedStudent != null) {
+                    String paymentString = JOptionPane.showInputDialog("Enter payment amount:");
+                    try {
+                        double paymentAmount = Double.parseDouble(paymentString);
+                        selectedStudent.addPayment(paymentAmount);
+                        detailsTextArea.setText(selectedStudent.toString());
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(StudentManager.this, "Invalid payment amount.");
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(StudentManager.this, "Please select a student.");
+                }
+            }
+        });
+
+        // Set up the main frame
+        setTitle("Student Manager");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 400);
+        setLocationRelativeTo(null);
+        add(mainPanel);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new StudentManager();
+            }
+        });
+    }
+
+    class Student {
+        private String name;
+        private int credits;
+        private double balance;
+
+        public Student(String name) {
+            this.name = name;
+            this.credits = 0;
+            this.balance = 0.0;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public int getCredits() {
+            return credits;
+        }
+
+        public double getBalance() {
+            return balance;
+        }
+
+        public void deductCredit() {
+            if (credits > 0) {
+                credits--;
+            }
+        }
+
+        public void addPayment(double amount) {
+            if (amount > 0) {
+                balance += amount;
+                credits++; // Increment credits for each payment added
+            }
+        }
+
+        @Override
+        public String toString() {
+            return "Name: " + name + "\n" +
+                    "Credits: " + credits + "\n" +
+                    "Balance: $" + balance;
+        }
+    }
+}
