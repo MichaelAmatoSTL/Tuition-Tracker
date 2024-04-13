@@ -1,0 +1,134 @@
+class StudentManager : javax.swing.JFrame() {
+    private val students: MutableList<Student>
+    private val listModel: javax.swing.DefaultListModel<Student>
+    private val studentList: javax.swing.JList<Student>
+    private val detailsTextArea: javax.swing.JTextArea
+
+    init {
+        // Initialize students list
+        students = ArrayList()
+
+        // Create GUI components
+        val mainPanel: javax.swing.JPanel = javax.swing.JPanel(java.awt.BorderLayout())
+        val studentPanel: javax.swing.JPanel = javax.swing.JPanel(java.awt.BorderLayout())
+        val buttonPanel: javax.swing.JPanel = javax.swing.JPanel(java.awt.FlowLayout())
+        val addButton: javax.swing.JButton = javax.swing.JButton("Add Student")
+        val deductButton: javax.swing.JButton = javax.swing.JButton("-")
+        val addPaymentButton: javax.swing.JButton = javax.swing.JButton("Add Payment")
+        listModel = javax.swing.DefaultListModel<Student>()
+        studentList = javax.swing.JList<Student>(listModel)
+        val studentScrollPane: javax.swing.JScrollPane = javax.swing.JScrollPane(studentList)
+        detailsTextArea = javax.swing.JTextArea()
+        val detailsScrollPane: javax.swing.JScrollPane = javax.swing.JScrollPane(detailsTextArea)
+
+        // Add components to panels
+        studentPanel.add(studentScrollPane, java.awt.BorderLayout.CENTER)
+        studentPanel.add(buttonPanel, java.awt.BorderLayout.SOUTH)
+        buttonPanel.add(addButton)
+        buttonPanel.add(deductButton)
+        buttonPanel.add(addPaymentButton)
+        mainPanel.add(studentPanel, java.awt.BorderLayout.WEST)
+        mainPanel.add(detailsScrollPane, java.awt.BorderLayout.CENTER)
+
+        // Add action listeners
+        addButton.addActionListener(object : java.awt.event.ActionListener() {
+            override fun actionPerformed(e: java.awt.event.ActionEvent) {
+                val name: String = javax.swing.JOptionPane.showInputDialog("Enter student name:")
+                if (name != null && !name.isEmpty()) {
+                    val student: Student = Student(name)
+                    students.add(student)
+                    listModel.addElement(student)
+                }
+            }
+        })
+        studentList.addListSelectionListener(javax.swing.event.ListSelectionListener { e: javax.swing.event.ListSelectionEvent ->
+            if (!e.getValueIsAdjusting()) {
+                val selectedStudent: Student = studentList.getSelectedValue()
+                if (selectedStudent != null) {
+                    detailsTextArea.setText(selectedStudent.toString())
+                }
+            }
+        })
+        deductButton.addActionListener(object : java.awt.event.ActionListener() {
+            override fun actionPerformed(e: java.awt.event.ActionEvent) {
+                val selectedStudent: Student = studentList.getSelectedValue()
+                if (selectedStudent != null) {
+                    selectedStudent.deductCredit()
+                    detailsTextArea.setText(selectedStudent.toString())
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(
+                        this@StudentManager,
+                        "Please select a student."
+                    )
+                }
+            }
+        })
+        addPaymentButton.addActionListener(object : java.awt.event.ActionListener() {
+            override fun actionPerformed(e: java.awt.event.ActionEvent) {
+                val selectedStudent: Student = studentList.getSelectedValue()
+                if (selectedStudent != null) {
+                    val paymentString: String =
+                        javax.swing.JOptionPane.showInputDialog("Enter payment amount:")
+                    try {
+                        val paymentAmount = paymentString.toDouble()
+                        selectedStudent.addPayment(paymentAmount)
+                        detailsTextArea.setText(selectedStudent.toString())
+                    } catch (ex: NumberFormatException) {
+                        javax.swing.JOptionPane.showMessageDialog(
+                            this@StudentManager,
+                            "Invalid payment amount."
+                        )
+                    }
+                } else {
+                    javax.swing.JOptionPane.showMessageDialog(
+                        this@StudentManager,
+                        "Please select a student."
+                    )
+                }
+            }
+        })
+
+        // Set up the main frame
+        setTitle("Student Manager")
+        setDefaultCloseOperation(javax.swing.JFrame.EXIT_ON_CLOSE)
+        setSize(600, 400)
+        setLocationRelativeTo(null)
+        add(mainPanel)
+        setVisible(true)
+    }
+
+    internal inner class Student(val name: String) {
+        var credits = 0
+            private set
+        var balance = 0.0
+            private set
+
+        fun deductCredit() {
+            if (credits > 0) {
+                credits--
+            }
+        }
+
+        fun addPayment(amount: Double) {
+            if (amount > 0) {
+                balance += amount
+                credits++ // Increment credits for each payment added
+            }
+        }
+
+        override fun toString(): String {
+            return """
+                Name: $name
+                Credits: $credits
+                Balance: ${"$"}$balance
+                """.trimIndent()
+        }
+    }
+
+    companion object {
+        @JvmStatic
+        fun main(args: Array<String>) {
+            javax.swing.SwingUtilities.invokeLater(Runnable { StudentManager() })
+        }
+    }
+}
