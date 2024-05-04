@@ -11,3 +11,10 @@ Add a Student: Tap the '+' button on the main screen to add a new student.
 View Student Details: Click on a student in the list to view their details.
 Deduct Credits: In the student details view, use the '-' button to deduct a credit when a class is taken.
 Add Payment: Use the 'Add Payment' FAB in the student details view to record new payments and add credits.
+
+
+Functionality:
+•	Student Management: Add and view student details, including name and credit balance.
+•	Credit Tracking: Deduct credits as classes are taken and add credits with each payment.
+•	Payment Recording: Keep a history of payments, including amount and date.
+
