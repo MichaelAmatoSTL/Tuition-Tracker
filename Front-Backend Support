@@ -1,0 +1,21 @@
+Frontend Kotlin and Java language support:
+1.	In the method declaration, typing an open brace automatically inserts the closing one
+2.	Typing 'Enter' after '{' adds a closing brace (e.g. to the body of 'if' statement)
+3.	Typing 'Enter' adds the needed number of indent characters, taking nesting into account
+4.	Placing a caret on a brace leads to the matching brace being highlighted
+5.	Backspace removing symbols and empty whitespaces
+6.	Extend/Shrink selection works as expected, changing the selection to the corresponding range according to the AST nesting level
+Java plugin implementation and details 
+remote-dev/cwm-guest/plugins/java-frontend - path to java implementation
+React is a JavaScript library for building user interfaces. It is very popular and has a large community. React is known for its component-based approach, which makes it easy to build complex and reusable UIs.
+
+Angular is a TypeScript-based open-source web application framework led by the Angular Team at Google and by a community of individuals and corporations. Angular is a comprehensive framework that provides a lot of out-of-the-box functionality, such as routing, dependency injection, and forms.
+
+Backend Java language support:
+•	Java,
+•	Spring Boot,
+•	Spring Security,
+•	Spring Data,
+•	Hibernate,
+•	Lombok,
+•	MySQL,
